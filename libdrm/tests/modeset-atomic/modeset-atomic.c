@@ -858,17 +858,18 @@ static void modeset_paint_framebuffer(struct modeset_output *out)
 	unsigned int j, k, off;
 
 	/* draw on back framebuffer */
-	out->r = next_color(&out->r_up, out->r, 5);
-	out->g = next_color(&out->g_up, out->g, 5);
-	out->b = next_color(&out->b_up, out->b, 5);
-	buf = &out->bufs[out->front_buf ^ 1];
-	for (j = 0; j < buf->height; ++j) {
-		for (k = 0; k < buf->width; ++k) {
-			off = buf->stride * j + k * 4;
-			*(uint32_t *)&buf->map[off] =
-				(out->r << 16) | (out->g << 8) | out->b;
-		}
-	}
+        out->r = next_color(&out->r_up, out->r, 255);
+        out->g = next_color(&out->g_up, out->g, 255);
+        out->b = next_color(&out->b_up, out->b, 255);
+        buf = &out->bufs[out->front_buf ^ 1];
+        for (j = 0; j < buf->height; ++j) {
+          for (k = 0; k < buf->width; ++k) {
+            off = buf->stride * j + k * 4;
+            *(uint32_t *)&buf->map[off] =
+                (out->r << 16) | (out->g << 8) | out->b;
+          }
+        }
+        sleep(1);
 }
 
 /*
@@ -1018,23 +1019,23 @@ static int modeset_perform_modeset(int fd)
 	/* draw on back framebuffer of all outputs */
 	for (iter = output_list; iter; iter = iter->next) {
 		/* colors initialization, this is the first time we're drawing */
-		iter->r = rand() % 0xff;
-		iter->g = rand() % 0xff;
-		iter->b = rand() % 0xff;
-		iter->r_up = iter->g_up = iter->b_up = true;
+                iter->r = rand() % 0xff;
+                iter->g = rand() % 0xff;
+                iter->b = rand() % 0xff;
+                iter->r_up = iter->g_up = iter->b_up = true;
 
-		modeset_paint_framebuffer(iter);
-	}
+                modeset_paint_framebuffer(iter);
+        }
 
-	/* initial modeset on all outputs */
-	flags = DRM_MODE_ATOMIC_ALLOW_MODESET | DRM_MODE_PAGE_FLIP_EVENT;
-	ret = drmModeAtomicCommit(fd, req, flags, NULL);
-	if (ret < 0)
-		fprintf(stderr, "modeset atomic commit failed, %d\n", errno);
+        /* initial modeset on all outputs */
+        flags = DRM_MODE_ATOMIC_ALLOW_MODESET | DRM_MODE_PAGE_FLIP_EVENT;
+        ret = drmModeAtomicCommit(fd, req, flags, NULL);
+        if (ret < 0)
+          fprintf(stderr, "modeset atomic commit failed, %d\n", errno);
 
-	drmModeAtomicFree(req);
+        drmModeAtomicFree(req);
 
-	return ret;
+        return ret;
 }
 
 /*
@@ -1083,24 +1084,24 @@ static void modeset_draw(int fd)
 	modeset_perform_modeset(fd);
 
 	/* wait 5s for VBLANK or input events */
-	while (time(&cur) < start + 5) {
-		FD_SET(0, &fds);
-		FD_SET(fd, &fds);
-		v.tv_sec = start + 5 - cur;
+        while (time(&cur) < start + 255) {
+          FD_SET(0, &fds);
+          FD_SET(fd, &fds);
+          v.tv_sec = start + 255 - cur;
 
-		ret = select(fd + 1, &fds, NULL, NULL, &v);
-		if (ret < 0) {
-			fprintf(stderr, "select() failed with %d: %m\n", errno);
-			break;
-		} else if (FD_ISSET(0, &fds)) {
-			fprintf(stderr, "exit due to user-input\n");
-			break;
-		} else if (FD_ISSET(fd, &fds)) {
-			/* read the fd looking for events and handle each event
-			 * by calling modeset_page_flip_event() */
-			drmHandleEvent(fd, &ev);
-		}
-	}
+          ret = select(fd + 1, &fds, NULL, NULL, &v);
+          if (ret < 0) {
+            fprintf(stderr, "select() failed with %d: %m\n", errno);
+            break;
+          } else if (FD_ISSET(0, &fds)) {
+            fprintf(stderr, "exit due to user-input\n");
+            break;
+          } else if (FD_ISSET(fd, &fds)) {
+            /* read the fd looking for events and handle each event
+             * by calling modeset_page_flip_event() */
+            drmHandleEvent(fd, &ev);
+          }
+        }
 }
 
 /*
