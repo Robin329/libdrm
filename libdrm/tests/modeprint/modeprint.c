@@ -37,7 +37,11 @@
 #include <unistd.h>
 #include <string.h>
 #include <inttypes.h>
-
+#include <errno.h>
+#include <stdbool.h>
+#include <sys/mman.h>
+#include <time.h>
+#include <fcntl.h>
 #include "xf86drm.h"
 #include "xf86drmMode.h"
 
@@ -394,7 +398,7 @@ int main(int argc, char **argv)
 
 	printf("Starting test\n");
 
-	fd = drmOpen(module_name, NULL);
+	fd = open(module_name, O_RDWR | O_NONBLOCK);
 
 	if (fd < 0) {
 		printf("Failed to open the card fd (%d)\n",fd);
