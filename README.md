@@ -6,7 +6,8 @@ sudo chmod -R 777 intel/tests
 ```
 1. mkdir build
 2. meson setup build && cd build 
-3. meson  --cross-file=../cross_file.txt 
+3.
+```
 meson --cross-file=../cross_file.txt \
     -D amdgpu=false \
     -D cairo-tests=false \
@@ -24,4 +25,5 @@ meson --cross-file=../cross_file.txt \
     -D tegra=false \
     -D udev=false \
     -D valgrind=false  -D vc4=false -D vmwgfx=false
+```
 4. ninja
