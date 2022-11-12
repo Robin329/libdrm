@@ -8,19 +8,19 @@ AM_CFLAGS = \
 
 if HAVE_INSTALL_TESTS
 bin_PROGRAMS = \
-	modelist
+	modeset
 else
 noinst_PROGRAMS = \
-	modelist
+	modeset
 endif
 
 modeset_SOURCES = \
-	modelist.c
+	modeset.c
 
 modeset_LDADD = \
 	$(top_builddir)/tests/util/libutil.la \
 	$(top_builddir)/libkms/libkms.la \
 	$(top_builddir)/libdrm.la
 
-run: modelist
-	./modelist
+run: modeset
+	./modeset

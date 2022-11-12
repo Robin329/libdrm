@@ -6,12 +6,12 @@ strip = 'aarch64-linux-gnu-strip'
 
 [host_machine]
 system = 'linux'
-cpu_family = 'arm64'
-cpu = 'armv8'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
 endian = 'little'
 
 [build_machine]
 system = 'linux'
-cpu_family = 'arm64'
-cpu = 'armv8'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
 endian = 'little'

@@ -42,6 +42,7 @@ subdir('modeset-atomic')
 subdir('proptest')
 subdir('modetest')
 subdir('vbltest')
+subdir('modelist')
 if with_libkms
   subdir('kmstest')
 endif

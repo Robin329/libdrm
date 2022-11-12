@@ -1,0 +1,3 @@
+[submodule "libdrm/third_lib/xorg-libpciaccess"]
+	path = libdrm/third_lib/xorg-libpciaccess
+	url = https://github.com/freedesktop/xorg-libpciaccess.git
