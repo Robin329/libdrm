@@ -43,6 +43,9 @@ subdir('proptest')
 subdir('modetest')
 subdir('vbltest')
 subdir('modelist')
+subdir('selectres')
+subdir('showfb')
+subdir('animatefb')
 if with_libkms
   subdir('kmstest')
 endif
