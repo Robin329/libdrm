@@ -521,7 +521,7 @@ static int modeset_create_fb(int fd, struct modeset_buf *buf)
 	/* create framebuffer object for the dumb-buffer */
 	handles[0] = buf->handle;
 	pitches[0] = buf->stride;
-	ret = drmModeAddFB2(fd, buf->width, buf->height, DRM_FORMAT_XRGB8888,
+	ret = drmModeAddFB2(fd, buf->width, buf->height, DRM_FORMAT_ARGB8888,
 			    handles, pitches, offsets, &buf->fb, 0);
 	if (ret) {
 		fprintf(stderr, "cannot create framebuffer (%d): %m\n", errno);

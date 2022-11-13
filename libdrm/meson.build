@@ -280,6 +280,7 @@ add_project_arguments('-include', 'config.h', language : 'c')
 
 inc_root = include_directories('.')
 inc_drm = include_directories('include/drm')
+inc_img = include_directories('tests/image')
 
 libdrm = shared_library(
   'drm',
