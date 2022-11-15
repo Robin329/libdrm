@@ -58,14 +58,17 @@
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 #include <drm_fourcc.h>
-#include "argb888_1440x480_640x480.h"
+#include "abgr888_640x480.h"
 #include "yuv420_p2_8_640_480.h"
 
 #define IMG_WIDTH_PX 640
 #define IMG_HEIGHT_PX 480
 
-#define IMG_WIDTH_PX_1 1440
+#define IMG_WIDTH_PX_1 640
 #define IMG_HEIGHT_PX_1 480
+
+#define DISPLAY_YUV 1
+
 /*
  * A new struct is introduced: drm_object. It stores properties of certain
  * objects (connectors, CRTC and planes) that are used in atomic modeset setup
@@ -516,7 +519,11 @@ static int modeset_create_fb(int fd, struct modeset_buf *buf)
 	memset(&creq, 0, sizeof(creq));
 	creq.width = buf->width;
 	creq.height = buf->height;
+#if DISPLAY_YUV
+	creq.bpp = 12;
+#else
 	creq.bpp = 32;
+#endif
 	ret = drmIoctl(fd, DRM_IOCTL_MODE_CREATE_DUMB, &creq);
 	if (ret < 0) {
 		fprintf(stderr, "cannot create dumb buffer (%d): %m\n", errno);
@@ -532,8 +539,13 @@ static int modeset_create_fb(int fd, struct modeset_buf *buf)
 	/* create framebuffer object for the dumb-buffer */
 	handles[0] = buf->handle;
 	pitches[0] = buf->stride;
-	ret = drmModeAddFB2(fd, buf->width, buf->height, DRM_FORMAT_ARGB8888,
+#if DISPLAY_YUV
+	ret = drmModeAddFB2(fd, buf->width, buf->height, DRM_FORMAT_NV12,
 			    handles, pitches, offsets, &buf->fb, 0);
+#else
+	ret = drmModeAddFB2(fd, buf->width, buf->height, DRM_FORMAT_ABGR8888,
+			    handles, pitches, offsets, &buf->fb, 0);
+#endif
 	if (ret) {
 		fprintf(stderr, "cannot create framebuffer (%d): %m\n", errno);
 		ret = -errno;
@@ -867,33 +879,45 @@ static void modeset_paint_framebuffer(struct modeset_output *out)
 {
 	struct modeset_buf *buf;
 	unsigned int j, k, off;
-	int count;
+	int count = 0;
 
 	/* draw on back framebuffer */
 	// out->r = next_color(&out->r_up, out->r, 255);
 	// out->g = next_color(&out->g_up, out->g, 255);
 	// out->b = next_color(&out->b_up, out->b, 255);
 	buf = &out->bufs[out->front_buf ^ 1];
-#if 0
-	for (j = 0; j < IMG_HEIGHT_PX_1; ++j) {
-		for (k = 0; k < IMG_WIDTH_PX_1; ++k) {
+#if DISPLAY_YUV
+
+	for (j = 0; j < IMG_HEIGHT_PX / 2; ++j) {
+		for (k = 0; k < IMG_WIDTH_PX / 2; ++k) {
 			off = buf->stride * j + k * 4;
 			*(uint32_t *)&buf->map[off] =
 				// (out->r << 16) | (out->g << 8) | out->b;
-				basic_hex_1440_480_argb_888[IMG_WIDTH_PX_1 * j +
-							    k];
+				basic_yuv420_p2_nv12_8bit_640_480[IMG_WIDTH_PX *
+									  j +
+								  k];
 		}
 	}
+	for (j = 0; j < IMG_HEIGHT_PX / 4; ++j) {
+		for (k = 0; k < IMG_WIDTH_PX / 4; ++k) {
+			off = buf->stride * j + k * 4;
+			*(uint32_t *)&buf->map[off] =
+				// (out->r << 16) | (out->g << 8) | out->b;
+				basic_yuv420_p2_nv12_8bit_640_480[IMG_WIDTH_PX *
+									  j +
+								  k];
+		}
+	}
+
 #else
 	for (j = 0; j < IMG_HEIGHT_PX; ++j) {
 		for (k = 0; k < IMG_WIDTH_PX; ++k) {
 			off = buf->stride * j + k * 4;
 			*(uint32_t *)&buf->map[off] =
 				// (out->r << 16) | (out->g << 8) | out->b;
-				basic_hex_640_480_argb_888[IMG_WIDTH_PX * j + k];
+				basic_hex_640_480_abgr_888[IMG_WIDTH_PX * j + k];
 		}
 	}
-
 #endif
 	sleep(1);
 }
@@ -1048,7 +1072,7 @@ static int modeset_perform_modeset(int fd)
 		// iter->r = rand() % 0xff;
 		// iter->g = rand() % 0xff;
 		// iter->b = rand() % 0xff;
-		iter->r_up = iter->g_up = iter->b_up = false;
+		// iter->r_up = iter->g_up = iter->b_up = false;
 
 		modeset_paint_framebuffer(iter);
 	}
