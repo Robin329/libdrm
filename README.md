@@ -9,7 +9,7 @@ sudo chmod -R 777 intel/tests
 3.
 ```
 meson --cross-file=../cross_file.txt \
-    -D amdgpu=false \
+    -D amdgpu=disabled \
     -D cairo-tests=false \
     -D etnaviv=false \
     -D exynos=true \
