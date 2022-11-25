@@ -10,20 +10,19 @@ sudo chmod -R 777 intel/tests
 ```
 meson --cross-file=../cross_file.txt \
     -D amdgpu=disabled \
-    -D cairo-tests=false \
-    -D etnaviv=false \
-    -D exynos=true \
-    -D freedreno=false \
+    -D cairo-tests=auto \
+    -D etnaviv=auto \
+    -D exynos=auto \
+    -D freedreno=enabled \
     -D freedreno-kgsl=false \
-    -D install-test-programs=true \
-    -D intel=false \
-    -D libkms=false \
-    -D man-pages=false \
-    -D nouveau=false \
-    -D omap=false \
-    -D radeon=false \
-    -D tegra=false \
+    -D install-test-programs=false \
+    -D intel=enabled \
+    -D man-pages=disabled \
+    -D nouveau=disabled \
+    -D omap=disabled \
+    -D radeon=disabled \
+    -D tegra=disabled \
     -D udev=false \
-    -D valgrind=false  -D vc4=false -D vmwgfx=false
+    -D valgrind=disabled  -D vc4=disabled -D vmwgfx=disabled 
 ```
 4. ninja
