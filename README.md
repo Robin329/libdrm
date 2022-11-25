@@ -1,11 +1,13 @@
 
 ```sh
-sudo apt-get install python-docutils valgrind libcunit1-dev libcairo2-dev cunit cairo libpciaccess-dev python3-pip meson -y
+sudo apt-get install python3-docutils valgrind libcunit1-dev pkg-config libcairo2-dev  libcairo2-dev libcunit1-dev libpciaccess-dev python3-pip meson -y
 pip3 install ninja meson rst2man
 sudo chmod -R 777 intel/tests
 ```
-1. mkdir build
-2. meson setup build && cd build 
+
+1. mkdir build && cd build
+2. meson --cross-file=../cross_file.txt
+OR # Maybe compile error
 3.
 ```
 meson --cross-file=../cross_file.txt \
@@ -23,6 +25,6 @@ meson --cross-file=../cross_file.txt \
     -D radeon=auto \
     -D tegra=auto \
     -D udev=false \
-    -D valgrind=auto  -D vc4=auto -D vmwgfx=auto 
+    -D valgrind=auto  -D vc4=auto -D vmwgfx=auto
 ```
-4. ninja
+1. ninja
