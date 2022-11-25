@@ -16,13 +16,13 @@ meson --cross-file=../cross_file.txt \
     -D freedreno=enabled \
     -D freedreno-kgsl=false \
     -D install-test-programs=false \
-    -D intel=disabled \
-    -D man-pages=disabled \
-    -D nouveau=disabled \
-    -D omap=disabled \
-    -D radeon=disabled \
-    -D tegra=disabled \
+    -D intel=auto \
+    -D man-pages=auto \
+    -D nouveau=auto \
+    -D omap=auto \
+    -D radeon=auto \
+    -D tegra=auto \
     -D udev=false \
-    -D valgrind=disabled  -D vc4=disabled -D vmwgfx=disabled 
+    -D valgrind=auto  -D vc4=auto -D vmwgfx=auto 
 ```
 4. ninja
