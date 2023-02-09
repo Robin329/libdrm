@@ -212,7 +212,7 @@ foreach a : ['unused-parameter', 'attributes', 'long-long',
 endforeach
 
 # all c args:
-libdrm_c_args = warn_c_args + ['-fvisibility=hidden']
+libdrm_c_args = warn_c_args + ['-fvisibility=hidden'] + ['-g']
 
 
 dep_pciaccess = dependency('pciaccess', version : '>= 0.10', required : with_intel)

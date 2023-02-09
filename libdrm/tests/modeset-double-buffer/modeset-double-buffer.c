@@ -70,6 +70,23 @@ static void modeset_destroy_fb(int fd, struct buffer_object *bo)
 	drmIoctl(fd, DRM_IOCTL_MODE_DESTROY_DUMB, &destroy);
 }
 
+const char *get_host_type(void)
+{
+	ssize_t ret = 0;
+
+	char *buf = (char *)malloc(sizeof(char) * 16);
+	int fd = open("/etc/hostname", O_RDONLY);
+	if (fd < 0)
+		return NULL;
+	ret = read(fd, buf, 16);
+	if (ret == 0) {
+		printf("read host type is NULL!\n");
+		return 0;
+	}
+	printf("hostname:%s\n", buf);
+	return buf;
+}
+
 int main(int argc, char **argv)
 {
 	int fd;
@@ -77,14 +94,23 @@ int main(int argc, char **argv)
 	drmModeRes *res;
 	uint32_t conn_id;
 	uint32_t crtc_id;
+	const char *host_name = get_host_type();
 
-	fd = open("/dev/dri/card0", O_RDWR | O_CLOEXEC);
-
+	if (!strncmp(host_name, "raspberrypi", strlen("raspberrypi")))
+		fd = open("/dev/dri/card1", O_RDWR | O_CLOEXEC);
+	else
+		fd = open("/dev/dri/card0", O_RDWR | O_CLOEXEC);
+	if (host_name)
+		free(host_name);
 	res = drmModeGetResources(fd);
 	crtc_id = res->crtcs[0];
 	conn_id = res->connectors[0];
 
 	conn = drmModeGetConnector(fd, conn_id);
+	if (!conn || !conn->modes) {
+		printf("conn is null!\n");
+		return -1;
+	}
 	buf[0].width = conn->modes[0].hdisplay;
 	buf[0].height = conn->modes[0].vdisplay;
 	buf[1].width = conn->modes[0].hdisplay;
