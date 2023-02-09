@@ -67,7 +67,7 @@
 #define IMG_WIDTH_PX_1 640
 #define IMG_HEIGHT_PX_1 480
 
-#define DISPLAY_YUV 1
+#define DISPLAY_YUV 0
 
 /*
  * A new struct is introduced: drm_object. It stores properties of certain

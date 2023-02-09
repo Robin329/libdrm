@@ -108,3 +108,4 @@ tests/setversion
 tests/updatedraw
 tests/vbltest/vbltest
 via.kld
+.cache/

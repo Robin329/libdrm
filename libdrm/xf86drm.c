@@ -408,8 +408,8 @@ wait_for_udev:
 #endif
 
     fd = open(buf, O_RDWR | O_CLOEXEC, 0);
-    drmMsg("drmOpenDevice: open result is %d, (%s)\n",
-           fd, fd < 0 ? strerror(errno) : "OK");
+    drmMsg("[%d]drmOpenDevice: open result is %d, (%s)\n", __LINE__, fd,
+	   fd < 0 ? strerror(errno) : "OK");
     if (fd >= 0)
         return fd;
 
@@ -428,8 +428,8 @@ wait_for_udev:
         }
     }
     fd = open(buf, O_RDWR | O_CLOEXEC, 0);
-    drmMsg("drmOpenDevice: open result is %d, (%s)\n",
-           fd, fd < 0 ? strerror(errno) : "OK");
+    drmMsg("[%d]drmOpenDevice: open result is %d, (%s)\n", __LINE__, fd,
+	   fd < 0 ? strerror(errno) : "OK");
     if (fd >= 0)
         return fd;
 

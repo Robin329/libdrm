@@ -197,7 +197,7 @@ foreach a : ['-Wall', '-Wextra', '-Wsign-compare', '-Werror=undef',
              '-Wmissing-declarations', '-Wnested-externs', '-Wpacked',
              '-Wswitch-enum', '-Wmissing-format-attribute',
              '-Wstrict-aliasing=2', '-Winit-self', '-Winline', '-Wshadow',
-             '-Wdeclaration-after-statement', '-Wold-style-definition']
+             '-Wdeclaration-after-statement', '-Wold-style-definition', '-g', '-O0']
   if cc.has_argument(a)
     warn_c_args += a
   endif

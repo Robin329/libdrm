@@ -17,7 +17,14 @@
 
 int main(int argc, char *argv[])
 {
-	int drm_fd = open("/dev/dri/card0", O_RDWR | O_NONBLOCK);
+	const char *card;
+	int drm_fd;
+	/* check which DRM device to open */
+	if (argc > 1)
+		card = argv[1];
+	else
+		card = "/dev/dri/card0";
+	drm_fd = open(card, O_RDWR | O_NONBLOCK);
 	if (drm_fd < 0) {
 		perror("open failed");
 		return 1;
