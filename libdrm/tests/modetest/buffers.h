@@ -37,4 +37,5 @@ struct bo *bo_create(int fd, unsigned int format,
 		   unsigned int offsets[4], enum util_fill_pattern pattern);
 void bo_destroy(struct bo *bo);
 void bo_dump(struct bo *bo, const char *filename);
+
 #endif
