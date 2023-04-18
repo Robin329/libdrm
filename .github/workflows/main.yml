@@ -16,6 +16,6 @@ jobs:
     - name: install deps
       run: sudo apt install -y meson ninja-build libdrm-dev libegl1-mesa-dev libgles2-mesa-dev libwayland-dev libx11-xcb-dev libx11-dev libgbm-dev libevdev-dev libfmt-dev
     - name: configure
-      run: cd libdrm/ && meson --cross-file=../cross_file.txt build
+      run: cd libdrm/ && meson --cross-file=cross_file.txt build
     - name: build
       run: ninja -v -C build
