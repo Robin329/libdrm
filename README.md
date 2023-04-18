@@ -1,3 +1,4 @@
+[![Build Status](https://github.com/Robin329/libdrm/actions/workflows/main.yml/badge.svg)](https://github.com/Robin329/libdrm/actions/workflows/main.yml)
 
 ```sh
 sudo apt-get install python3-docutils valgrind libcunit1-dev pkg-config libcairo2-dev  libcairo2-dev libcunit1-dev libpciaccess-dev python3-pip meson -y
