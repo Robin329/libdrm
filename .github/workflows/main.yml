@@ -18,4 +18,6 @@ jobs:
     - name: configure
       run: cd libdrm/ && meson --cross-file=cross_file.txt build
     - name: build
-      run: ninja -v -C build
+      run: |
+        cd libdrm
+        ninja -v -C build
