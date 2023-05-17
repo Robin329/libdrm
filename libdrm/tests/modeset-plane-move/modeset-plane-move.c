@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 	drmModeRes *res;
 	drmModePlaneRes *plane_res;
 	uint32_t conn_id;
-	uint32_t crtc_id, x, y;
+	uint32_t crtc_id, x, y, x1, y1;
 	uint32_t plane_id;
 	int ret;
 	int rotation = 1, alpha = 10;
@@ -314,13 +314,13 @@ int main(int argc, char **argv)
 	modeset_create_fb(fd, &plane_buf[0]);
 	write_color(&plane_buf[0], 0x00ff0000);
 
-	ret = drmModeSetPlane(fd, plane_res->planes[1], crtc_id,
-			      plane_buf[0].fb_id, 0, 50, 50, plane_buf[0].width,
-			      plane_buf[0].height, 0, 0,
-			      (plane_buf[0].width) << 16,
-			      (plane_buf[0].height) << 16);
-	if (ret < 0)
-		printf("drmModeSetPlane err %d\n", ret);
+	// ret = drmModeSetPlane(fd, plane_res->planes[1], crtc_id,
+	// 		      plane_buf[0].fb_id, 0, 50, 50, plane_buf[0].width,
+	// 		      plane_buf[0].height, 0, 0,
+	// 		      (plane_buf[0].width) << 16,
+	// 		      (plane_buf[0].height) << 16);
+	// if (ret < 0)
+	// 	printf("[%d]drmModeSetPlane err %d\n", __LINE__, ret);
 
 	// -------------------  overlay 2
 	plane_buf[1].width = 200;
@@ -328,39 +328,55 @@ int main(int argc, char **argv)
 	modeset_create_fb(fd, &plane_buf[1]);
 	write_color(&plane_buf[1], 0x0000ff00);
 
-	ret = drmModeSetPlane(fd, plane_res->planes[2], crtc_id,
+	ret = drmModeSetPlane(fd, plane_res->planes[3], crtc_id,
 			      plane_buf[1].fb_id, 0, 200, 200,
 			      plane_buf[1].width, plane_buf[1].height, 0, 0,
 			      plane_buf[1].width << 16,
 			      plane_buf[1].height << 16);
 	if (ret < 0)
-		printf("drmModeSetPlane err %d\n", ret);
+		printf("[%d]drmModeSetPlane (%d) err %d\n", __LINE__,
+		       plane_res->planes[3], ret);
 
 	get_planes_property(fd, plane_res);
 
 	// -------------------  HEO
-	plane_buf[2].width = 200;
-	plane_buf[2].height = 200;
+	plane_buf[2].width = 500;
+	plane_buf[2].height = 500;
 	modeset_create_fb(fd, &plane_buf[2]);
 	write_color_half(&plane_buf[2], 0x000000ff, 0x00000000);
 
 	//printf("press any key continue\n");
 	//getchar();
 
+	static int id = 0;
+	static int xxx = 1;
 	x = 0;
 	y = 0;
-	set_alpha(fd, plane_res->planes[3], 255);
+	x1 = 0;
+	y1 = 0;
+	set_alpha(fd, plane_res->planes[id], 255);
+	set_alpha(fd, plane_res->planes[1], 255);
 
 	while (1) {
 		/* Source values are 16.16 fixed point */
-		ret = drmModeSetPlane(fd, plane_res->planes[3], crtc_id,
+		ret = drmModeSetPlane(fd, plane_res->planes[id], crtc_id,
 				      plane_buf[2].fb_id, 0, x, y,
 				      plane_buf[2].width, plane_buf[2].height,
 				      0 << 16, 0 << 16,
 				      (plane_buf[2].width) << 16,
 				      (plane_buf[2].height) << 16);
+		if (ret < 0) {
+			printf("[%d]drmModeSetPlane err %d\n", __LINE__, ret);
+			id++;
+		}
+
+		ret = drmModeSetPlane(fd, plane_res->planes[1], crtc_id,
+				      plane_buf[0].fb_id, 0, x1, y1,
+				      plane_buf[0].width, plane_buf[0].height,
+				      0, 0, (plane_buf[0].width) << 16,
+				      (plane_buf[0].height) << 16);
 		if (ret < 0)
-			printf("drmModeSetPlane err %d\n", ret);
+			printf("[%d]drmModeSetPlane err %d\n", __LINE__, ret);
 
 		usleep(10000);
 
@@ -371,6 +387,20 @@ int main(int argc, char **argv)
 			if (y + plane_buf[2].height >= conn->modes[0].vdisplay)
 				y = 0;
 		}
+		y1 += 5 * xxx;
+
+		if (y1 + plane_buf[0].height >= conn->modes[0].vdisplay) {
+			y1 = 0;
+			x1 += 50;
+			xxx++;
+			if (x1 + plane_buf[0].width >=
+			    conn->modes[0].hdisplay) {
+				x1 = 0;
+			}
+		}
+
+		printf("[x,y,w,h]=[%d,%d,%d,%d]\n", x, y, plane_buf[2].width,
+		       plane_buf[2].height);
 
 #if 0
 		if(x && (x % 400) == 0){
