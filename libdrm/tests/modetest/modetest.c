@@ -1494,7 +1494,7 @@ static void set_mode(struct device *dev, struct pipe_arg *pipes, unsigned int co
 		x += pipe->mode->hdisplay;
 
 		if (ret) {
-			fprintf(stderr, "failed to set mode: %s\n", strerror(errno));
+			fprintf(stderr, "failed(%d) to set mode: %s\n", ret, strerror(errno));
 			return;
 		}
 
