@@ -207,9 +207,9 @@ static void dump_encoders(struct device *dev)
 	printf("\n");
 }
 
-static void dump_mode(drmModeModeInfo *mode)
+static void dump_mode(int count, drmModeModeInfo *mode)
 {
-	printf("  %s %d %d %d %d %d %d %d %d %d %d",
+	printf("#%d  %s %d %d %d %d %d %d %d %d %d %d", count,
 	       mode->name,
 	       mode->vrefresh,
 	       mode->hdisplay,
@@ -449,7 +449,7 @@ static void dump_connectors(struct device *dev)
 			printf("\tname refresh (Hz) hdisp hss hse htot vdisp "
 			       "vss vse vtot)\n");
 			for (j = 0; j < connector->count_modes; j++)
-				dump_mode(&connector->modes[j]);
+				dump_mode(j, &connector->modes[j]);
 		}
 
 		if (_connector->props) {
@@ -481,7 +481,7 @@ static void dump_crtcs(struct device *dev)
 		       crtc->buffer_id,
 		       crtc->x, crtc->y,
 		       crtc->width, crtc->height);
-		dump_mode(&crtc->mode);
+		dump_mode(i, &crtc->mode);
 
 		if (_crtc->props) {
 			printf("  props:\n");
