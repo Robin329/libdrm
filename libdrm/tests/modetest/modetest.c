@@ -2137,7 +2137,7 @@ static void usage(char *name)
 		"htotal,hskew,vdisplay,vsyncstart,vsyncend,vtotal,vscan,");
 	fprintf(stderr, "vrefresh,name>\tset a custom mode\n");
 	fprintf(stderr,
-		"\t-o <desired file path> \t Dump writeback output buffer to file\n");
+		"\t -a -o  <desired file path> \t Dump writeback output buffer to file\n");
 	fprintf(stderr, "\t-C\ttest hw cursor\n");
 	fprintf(stderr, "\t-v\ttest vsynced page flipping\n");
 	fprintf(stderr, "\t-r\tset the preferred mode for all connectors\n");
