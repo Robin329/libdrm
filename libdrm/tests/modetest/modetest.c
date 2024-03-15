@@ -207,12 +207,20 @@ static void dump_encoders(struct device *dev)
 	printf("\n");
 }
 
-static void dump_mode(drmModeModeInfo *mode, int index)
+static void dump_mode(int count, drmModeModeInfo *mode)
 {
-	printf("  #%i %s %.2f %d %d %d %d %d %d %d %d %d", index, mode->name,
-	       mode_vrefresh(mode), mode->hdisplay, mode->hsync_start,
-	       mode->hsync_end, mode->htotal, mode->vdisplay, mode->vsync_start,
-	       mode->vsync_end, mode->vtotal, mode->clock);
+	printf("#%d  %s %d %d %d %d %d %d %d %d %d %d", count,
+	       mode->name,
+	       mode->vrefresh,
+	       mode->hdisplay,
+	       mode->hsync_start,
+	       mode->hsync_end,
+	       mode->htotal,
+	       mode->vdisplay,
+	       mode->vsync_start,
+	       mode->vsync_end,
+	       mode->vtotal,
+	       mode->clock);
 
 	printf(" flags: ");
 	mode_flag_str(mode->flags);
@@ -419,7 +427,11 @@ static void dump_connectors(struct device *dev)
 			printf("\tindex name refresh (Hz) hdisp hss hse htot vdisp "
 			       "vss vse vtot\n");
 			for (j = 0; j < connector->count_modes; j++)
+<<<<<<< HEAD
 				dump_mode(&connector->modes[j], j);
+=======
+				dump_mode(j, &connector->modes[j]);
+>>>>>>> master
 		}
 
 		if (_connector->props) {
@@ -447,10 +459,19 @@ static void dump_crtcs(struct device *dev)
 		if (!crtc)
 			continue;
 
+<<<<<<< HEAD
 		printf("%d\t%d\t(%d,%d)\t(%dx%d)\n", crtc->crtc_id,
 		       crtc->buffer_id, crtc->x, crtc->y, crtc->width,
 		       crtc->height);
 		dump_mode(&crtc->mode, 0);
+=======
+		printf("%d\t%d\t(%d,%d)\t(%dx%d)\n",
+		       crtc->crtc_id,
+		       crtc->buffer_id,
+		       crtc->x, crtc->y,
+		       crtc->width, crtc->height);
+		dump_mode(i, &crtc->mode);
+>>>>>>> master
 
 		if (_crtc->props) {
 			printf("  props:\n");
@@ -1679,6 +1700,7 @@ static void set_mode(struct device *dev, struct pipe_arg *pipes,
 			if (!preferred)
 				x += pipe->mode->hdisplay;
 
+<<<<<<< HEAD
 			if (ret) {
 				fprintf(stderr, "failed to set mode: %s\n",
 					strerror(errno));
@@ -1710,6 +1732,11 @@ static void set_mode(struct device *dev, struct pipe_arg *pipes,
 
 				atomic_set_planes(dev, &plane_args, 1, false);
 			}
+=======
+		if (ret) {
+			fprintf(stderr, "failed(%d) to set mode: %s\n", ret, strerror(errno));
+			return;
+>>>>>>> master
 		}
 	}
 }

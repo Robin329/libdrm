@@ -42,7 +42,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <fcntl.h>
 #include "xf86drm.h"
 #include "xf86drmMode.h"
 
@@ -177,6 +177,8 @@ int util_open(const char *device, const char *module)
 
 		if (fd < 0) {
 			fprintf(stderr, "no device found\n");
+			fd = open(device, O_RDWR | O_NONBLOCK);
+			if (fd < 0)
 			return -ENODEV;
 		}
 	}
